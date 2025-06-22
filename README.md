@@ -1,13 +1,14 @@
 # Задание
-*Цель*: Добавить в приложение аутентификацию и регистрацию пользователей
+*Цель*: Реализовать сервис заказа, биллинга, нотификации. Настроить их взаимодействие с помощью брокера сообщений
 
 ### Задача
 
 **Реализовать сценарий "Изменение и просмотр данных в профиле клиента".**
- - Пользователь регистрируется.
- - Заходит под собой и по определенному урлу получает данные о своем профиле
- - Может поменять данные в профиле.
- - Данные профиля для чтения и редактирования не должны быть доступны другим клиентам (аутентифицированным или нет).
+ - При регистрации пользователя создается аккаунт в сервисе биллинга. В сервисе биллинга должна быть возможность положить деньги на аккаунт и снять деньги.
+ - Сервис нотификаций позволяет отправить сообщение на email. И позволяет получить список сообщений по методу API.
+ - Пользователь может создать заказ. У заказа есть параметр - цена заказа.
+ - Заказ происходит в 2 этапа: 1) сначала снимаем деньги с пользователя с помощью сервиса биллинга 2) отсылаем пользователю сообщение на почту с результатами оформления заказа.
+ - Спроектировать взаимодействие сервисов при создании заказов. 
 
 #### На выходе должны быть предоставлена
 
@@ -53,7 +54,7 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack --namespace k8s-basics --create-namespace
 ```
 
-#### Первый этап - устанавливаем namespace, запускаем API Gateway
+### Первый этап - устанавливаем namespace, запускаем API Gateway
 
 **Инициализируем манифесты**
 
@@ -61,7 +62,9 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace k
 kubectl apply -f k8s/api-gateway
 ```
 
-### Установка ingress-nginx + конфигурация Prometheus
+#### Подготовка к установке остальных сервисов
+
+1. Установка ingress-nginx + конфигурация Prometheus
 
 **Получаем нужный репозиторий из helm**
 
@@ -88,7 +91,7 @@ kubectl get svc -n k8s-basics
 | ngress-nginx-controller | LoadBalancer | 10.104.118.219 |  pending  | 80:31047/TCP,443:31617/TCP | 95m |
 
 
-### Проброс ingress-nginx наружу
+2. Проброс ingress-nginx наружу
 
 **Нам необходимо, чтобы домен arch.homework открывался без порта и по специальному url. Для этого мы должны прописать команду:**
 
@@ -112,12 +115,34 @@ kubectl get svc -n k8s-basics
 C:\Windows\System32\drivers\etc\hosts
 ```
 
-#### Второй этап - устанавливаем auth-service
+3. Установка брокера сообщений RabbitMС
+   
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+```
+
+```
+helm install rabbitmq bitnami/rabbitmq \
+  --namespace k8s-basics \
+  --set auth.username=guest \
+  --set auth.password=guest \
+  --set auth.vhost=/ \
+  --set service.type=ClusterIP
+```
+
+Проверяем запуск RabbitMQ
+
+```
+kubectl get pods -n k8s-basics
+```
+
+#### Второй этап - поднимаем сервисы
 
 **Инициализируем манифесты**
 
 ```
-kubectl apply -f k8s/auth-service
+kubectl apply -f k8s/
 ```
 
 [1]: https://github.com/Jony2Good/assets/blob/main/gateway-schema.png "Схема"
