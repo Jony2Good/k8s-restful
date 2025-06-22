@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-service-nginx-deploy
+  namespace: k8s-basics
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: billing-service-nginx-deploy
+  template:
+    metadata:
+      labels:
+        app: billing-service-nginx-deploy
+    spec:
+      containers:
+        - name: nginx
+          image: atrem2023/app-nginx:amd64
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: billing-service-nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/ready
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+        - name: billing-service-nginx-config
+          configMap:
+            name: billing-service-nginx-config

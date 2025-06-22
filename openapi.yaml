@@ -1,0 +1,383 @@
+openapi: 3.0.3
+info:
+  version: 0.1.0
+  title: Тестовый сервис
+  description: Сервис для работы с пользователями приложения
+servers:
+  - url: 'http://arch.homework/otusapp/aemelyanenko/api/'
+    description: TEST
+  - url: 'http://arch.homework/otusapp/aemelyanenko/api/'
+    description: PROD
+
+tags:
+  -  name: Auth
+     description: Содержит методы для работы с пользователями
+
+paths:
+  /auth/v1/register:
+    post:
+      tags:
+        - Auth
+      description: 'Регистрирует пользователя в системе'
+      summary: 'Регистрация пользователя'
+      operationId: 'register'
+      requestBody:
+        $ref: '#/components/requestBodies/employee'
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/register'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /auth/v1/login:
+    post:
+      tags:
+        - Auth
+      description: 'Аутентифицирует пользователя в системе'
+      summary: 'Аутентификация пользователя'
+      operationId: 'usersAuth'
+      requestBody:
+        $ref: '#/components/requestBodies/login'
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/login'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /auth/v1/refresh:
+    post:
+      tags:
+        - Auth
+      description: 'Обновление JWT токена'
+      summary: 'Обновление токена'
+      operationId: 'refresh'      
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/login'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /auth/v1/logout:
+    post:
+      tags:
+        - Auth
+      description: 'Выход пользователя из системы'
+      summary: 'Выход пользователя'
+      operationId: 'logout'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/login'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /auth/v1/me:
+    post:
+      tags:
+        - Auth
+      description: 'Получение данных пользователя'
+      summary: 'Данные пользователя'
+      operationId: 'getMe'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/register'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    put:
+      tags:
+        - Auth
+      description: 'Изменение данных пользователя'
+      summary: 'Изменение пользователя'
+      operationId: 'putMe'
+      security:
+      - BearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/login'
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/register'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    delete:
+      tags:
+        - Auth
+      description: 'Удаление данных пользователя'
+      summary: 'Удаление пользователя'
+      operationId: 'destroyMe'
+      security:
+      - BearerAuth: []      
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/register'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    400BadRequest:
+      description: 'Ошибки валидации запроса'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorModel'
+          example: { "success": false, "data": null, "errors": [ { "type": "Bad Request", "code": 400, "message": "Метод для работы с данным запросом не найден." } ] }
+    401Unauthorized:
+      description: 'Ошибки аутентификации/авторизации по токену<br>(токен не передан, неверный токен и т.п.)'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorModel'
+          examples:
+            undefinedToken:
+              value: { "success": false, "data": null, "errors": [ { "type": "Undefined Token", "code": 401, "message": "Идентификационный токен не передан." } ] }
+            invalidToken:
+              value: { "success": false, "data": null, "errors": [ { "type": "Invalid Token", "code": 401, "message": "Переданный токен не найден, содержит неверный формат или просрочен." } ] }
+    404NotFound:
+      description: 'По данному запросу ни чего не найдено.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorModel'
+          example: { "success": false, "data": null, "errors": [ { "type": "Not Found", "code": 404, "message": "Ни одного элемента, соответствующего данному запросу не найдено." } ] }
+    422UnprocessableEntity:
+      description: 'Ошибки бизнес-логики<br>(пользователь заблокирован и т.п.)'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorModel'
+          example: { "success": false, "data": null, "errors": [ { "type": "Unprocessable Entity", "code": 422, "message": "Пользователь заблокирован." } ] }
+    500InternalServerError:
+      description: 'Непредвиденные ошибки сервера'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorModel'
+          example: { "success": false, "data": null, "errors": [ { "type": "Internal Server Error", "code": 500, "message": "Ошибка базы данных." } ] }
+
+  requestBodies:
+    login:
+      description: JSON объект, содержащий информацию о пользователе
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [email, password]
+            properties:              
+              email:
+                type: string
+                example: 'admin@mail.ru'
+              password:
+                type: string
+                example: 'admin'
+
+    employee:
+      description: JSON объект, содержащий информацию о пользователе
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name, email, password]
+            properties:
+              name:
+                type: string
+                example: 'Авдеева Эльвира Евгеньевна'
+              email:
+                type: string
+                example: 'admin@mail.ru'
+              password:
+                type: string
+                example: 'admin'
+
+  schemas:
+    successModel:
+      type: object
+      description: 'Объект корректного ответа'
+      properties:
+        success:
+          description: 'Результат выполнения запроса (true)'
+          type: boolean
+          example: true
+        data:
+          description: 'Запрашиваемые данные, при отсутствии данных выводится <b>null</b>'
+          type: object
+        errors:
+          description: 'При успешном выполнении запроса приходит пустой массив <b>[]</b>'
+          type: array
+          items:
+            type: string
+          example: [ ]
+      required:
+        - success
+        - data
+        - errors
+
+    errorModel:
+      type: object
+      description: 'Объект ответа с ошибкой'
+      properties:
+        success:
+          description: 'Результат выполнения запроса (false)'
+          type: boolean
+          example: false
+        data:
+          description: 'При ошибке приходит <b>null</b>'
+          type: object
+          example: null
+        errors:
+          description: 'Информация об ошибке'
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                description: 'Тип ошибки'
+                type: string
+              code:
+                description: 'Код ошибки'
+                type: integer
+              massage:
+                description: 'Описание ошибки'
+                type: string
+      required:
+        - success
+        - data
+        - errors
+
+    login:
+      description: 'Получение токена авторизации'
+      required: [ access_token, token_type, expires_in ]
+      type: object
+      properties:
+        access_token:
+          description: JWT Token
+          type: string
+          example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
+        token_type:
+          description: Тип токена
+          type: string
+          example: bearer
+        expires_in:
+          description: Время жизни токена
+          type: integer
+          example: 3600      
+
+    register:
+      description: 'Данные зарегистрированного пользователя'
+      required: [ id, name, email]
+      type: object
+      properties:
+        message:
+          type: string
+          description: Сообщение об успешной регистрации
+          example: Пользователь зарегестрирован
+        user:
+          type: object
+          description: Информация о пользователе
+          required:
+            - id
+            - name
+            - email
+          properties:
+            id:
+              description: 'Числовой идентификатор пользователя'
+              type: integer
+              example: 1
+            name:
+              description: 'ФИО пользователя'
+              type: string
+              example: 'Авдееваа Эльвира Евгеньевна'
+            email:
+              description: 'Электронная почта" пользователя'
+              type: string
+              example: akk_1@mail.ru       
+  

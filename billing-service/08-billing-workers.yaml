@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-queue-worker
+  namespace: k8s-basics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing-queue-worker
+  template:
+    metadata:
+      labels:
+        app: billing-queue-worker
+    spec:
+      containers:
+        - name: queue-worker
+          image: atrem2023/billing-service:amd64
+          command: ["php", "artisan", "queue:work", "--verbose", "--tries=3", "--timeout=60"]    
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-registry-event
+  namespace: k8s-basics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing-registry-event
+  template:
+    metadata:
+      labels:
+        app: billing-registry-event
+    spec:
+      containers:
+        - name: registry-event
+          image: atrem2023/billing-service:amd64
+          command: ["php", "artisan", "app:registry-event"]    
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-payment-event
+  namespace: k8s-basics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing-payment-event
+  template:
+    metadata:
+      labels:
+        app: billing-payment-event
+    spec:
+      containers:
+        - name: payment-event
+          image: atrem2023/billing-service:amd64
+          command: ["php", "artisan", "app:payment-event"]

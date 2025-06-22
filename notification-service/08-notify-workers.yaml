@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify-event
+  namespace: k8s-basics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notify-event
+  template:
+    metadata:
+      labels:
+        app: notify-event
+    spec:
+      containers:
+        - name: registry-event
+          image: atrem2023/notification-service:amd64
+          command: ["php", "artisan", "app:registry-event"]    
