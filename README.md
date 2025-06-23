@@ -24,9 +24,10 @@
 ------------
 
 ### Результат
-1. [Схема][1]
-2. Команда установки состоит из двух этапов. Ниже по тексту
-3. [Спецификация][2]
+1. [Схема-картинка с работой сервисов][1]
+2. [Описание работы сервисов ][3]
+3. Команда установки состоит из двух этапов. Ниже по тексту
+4. [Спецификация][2]
 ------------
 ### Инструкция по запуску приложения
 
@@ -145,5 +146,6 @@ kubectl get pods -n k8s-basics
 kubectl apply -f k8s/
 ```
 
-[1]: https://github.com/Jony2Good/assets/blob/main/gateway-schema.png "Схема"
-[2]: https://github.com/Jony2Good/k8s-helm/blob/main/openapi.yaml "Спецификация"
+[1]: https://github.com/Jony2Good/k8s-restful/blob/main/restful-schema.png "Схема-картинка"
+[2]: https://github.com/Jony2Good/k8s-restful/blob/main/openapi.yaml "Спецификация"
+[3]: https://github.com/Jony2Good/k8s-restful/blob/main/restful-description.md "Описание работы сервисов"
