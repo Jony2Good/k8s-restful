@@ -119,12 +119,7 @@ C:\Windows\System32\drivers\etc\hosts
 3. Установка брокера сообщений RabbitMС
    
 ```
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-```
-
-```
-helm install rabbitmq bitnami/rabbitmq --namespace k8s-basics --set auth.username=guest --set auth.password=guest --set auth.vhost=/ --set service.type=ClusterIP
+kubectl apply -f k8s/rmq/
 ```
 
 Проверяем запуск RabbitMQ
@@ -138,7 +133,19 @@ kubectl get pods -n k8s-basics
 **Инициализируем манифесты**
 
 ```
-kubectl apply -f k8s/second/
+kubectl apply -f k8s/second/auth-service/
+```
+
+```
+kubectl apply -f k8s/second/billing-service/
+```
+
+```
+kubectl apply -f k8s/second/notification-service/
+```
+
+```
+kubectl apply -f k8s/second/order-service/
 ```
 
 [1]: https://github.com/Jony2Good/k8s-restful/blob/main/restful-schema.png "Схема-картинка"
