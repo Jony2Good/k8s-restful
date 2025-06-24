@@ -124,12 +124,7 @@ helm repo update
 ```
 
 ```
-helm install rabbitmq bitnami/rabbitmq \
-  --namespace k8s-basics \
-  --set auth.username=guest \
-  --set auth.password=guest \
-  --set auth.vhost=/ \
-  --set service.type=ClusterIP
+helm install rabbitmq bitnami/rabbitmq --namespace k8s-basics --set auth.username=guest --set auth.password=guest --set auth.vhost=/ --set service.type=ClusterIP
 ```
 
 Проверяем запуск RabbitMQ
