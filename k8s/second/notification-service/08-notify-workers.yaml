@@ -13,6 +13,10 @@ spec:
       labels:
         app: notify-event
     spec:
+      initContainers:
+        - name: wait-for-php
+          image: alpine:3.18
+          command: ['sh', '-c', 'apk add --no-cache netcat-openbsd && until nc -z notify-php-service 9000; do echo "Waiting for notify-php-service..."; sleep 2; done;']
       containers:
         - name: registry-event
           image: atrem2023/notification-service:amd64

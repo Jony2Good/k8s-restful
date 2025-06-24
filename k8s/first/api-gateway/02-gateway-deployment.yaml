@@ -4,7 +4,7 @@ metadata:
   name: gateway-laravel-deploy
   namespace: k8s-basics
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gateway-laravel-deploy

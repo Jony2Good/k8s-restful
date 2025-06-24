@@ -13,12 +13,17 @@ spec:
       labels:
         app: billing-queue-worker
     spec:
+      initContainers:
+        - name: wait-for-php
+          image: alpine:3.18
+          command: ['sh', '-c', 'apk add --no-cache netcat-openbsd && until nc -z billing-php-service 9000; do echo "Waiting for billing-php-service..."; sleep 2; done;']
       containers:
         - name: queue-worker
           image: atrem2023/billing-service:amd64
-          command: ["php", "artisan", "queue:work", "--verbose", "--tries=3", "--timeout=60"]    
+          command: ["php", "artisan", "queue:work", "--verbose", "--tries=3", "--timeout=60"]
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,12 +39,17 @@ spec:
       labels:
         app: billing-registry-event
     spec:
+      initContainers:
+        - name: wait-for-php
+          image: alpine:3.18
+          command: ['sh', '-c', 'apk add --no-cache netcat-openbsd && until nc -z billing-php-service 9000; do echo "Waiting for billing-php-service..."; sleep 2; done;']
       containers:
         - name: registry-event
           image: atrem2023/billing-service:amd64
-          command: ["php", "artisan", "app:registry-event"]    
+          command: ["php", "artisan", "app:registry-event"]
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,6 +65,10 @@ spec:
       labels:
         app: billing-payment-event
     spec:
+      initContainers:
+        - name: wait-for-php
+          image: alpine:3.18
+          command: ['sh', '-c', 'apk add --no-cache netcat-openbsd && until nc -z billing-php-service 9000; do echo "Waiting for billing-php-service..."; sleep 2; done;']
       containers:
         - name: payment-event
           image: atrem2023/billing-service:amd64

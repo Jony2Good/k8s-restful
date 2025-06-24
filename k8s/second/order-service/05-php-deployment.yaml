@@ -1,32 +1,23 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: laravel-job
+  name: order-php
   namespace: k8s-basics
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-php
   template:
+    metadata:
+      labels:
+        app: order-php
     spec:
-      initContainers:
-        - name: wait-for-postgres
-          image: postgres:15-alpine
-          command:
-            - sh
-            - -c
-            - |
-              until pg_isready -h postgres-service -p 5432 -U "$POSTGRES_USER"; do
-                echo "Waiting for postgres...";
-                sleep 2;
-              done;
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: db-secrets
-                  key: POSTGRES_USER
       containers:
-        - name: migrate
-          image: atrem2023/notification-service:amd64
-          command: ["bash", "update.sh"]
+        - name: php
+          image: atrem2023/order-service:amd64
+          ports:
+            - containerPort: 9000
           env:
             - name: DB_CONNECTION
               valueFrom:
@@ -57,5 +48,5 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: db-secrets
-                  key: POSTGRES_PASSWORD
-      restartPolicy: OnFailure
+                  key: POSTGRES_PASSWORD           
+            
