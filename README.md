@@ -34,7 +34,7 @@
 **Клонирум проект в локальный репозиторий**
 
  ```
- git clone https://github.com/Jony2Good/k8s-api-gateway.git
+ git clone https://github.com/Jony2Good/k8s-restful.git
 
 ```
 **Стартуем minikube**
