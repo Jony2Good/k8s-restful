@@ -136,6 +136,8 @@ kubectl apply -f k8s/second/notification-service/
 kubectl apply -f k8s/second/order-service/
 ```
 
+После успешной инициализации подов далее работаем с postman (спецификация в проекте). Не забываем, что сначала регистрируемся, потом логинимся, получая в ответ JWT, который нужно использовать в дальнейших запросах.
+
 [1]: https://github.com/Jony2Good/k8s-restful/blob/main/restful-schema.png "Схема-картинка"
 [2]: https://github.com/Jony2Good/k8s-restful/blob/main/openapi.yaml "Спецификация"
 [3]: https://github.com/Jony2Good/k8s-restful/blob/main/restful-description.md "Описание работы сервисов"
