@@ -38,21 +38,9 @@
 
 ```
 **Стартуем minikube**
+
 ```
 minikube start
-```
-
-**Устанавливаем Prometheus стэк из helm репозитория**
-```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-```
-
-```
-helm repo update
-```
-
-```
-helm install prometheus prometheus-community/kube-prometheus-stack --namespace k8s-basics --create-namespace
 ```
 
 ### Первый этап - устанавливаем namespace, запускаем API Gateway
