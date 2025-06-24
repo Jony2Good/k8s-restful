@@ -1,23 +1,32 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: order-php
+  name: auth-service-job
   namespace: k8s-basics
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: order-php
   template:
-    metadata:
-      labels:
-        app: order-php
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:15-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-service -p 5432 -U "$POSTGRES_USER"; do
+                echo "Waiting for postgres...";
+                sleep 2;
+              done;
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: POSTGRES_USER
       containers:
-        - name: php
-          image: atrem2023/order-service:amd64
-          ports:
-            - containerPort: 9000
+        - name: migrate
+          image: atrem2023/auth-service:amd64
+          command: ["bash", "update.sh"]
           env:
             - name: DB_CONNECTION
               valueFrom:
@@ -48,5 +57,5 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: db-secrets
-                  key: POSTGRES_PASSWORD           
-            
+                  key: POSTGRES_PASSWORD
+      restartPolicy: OnFailure

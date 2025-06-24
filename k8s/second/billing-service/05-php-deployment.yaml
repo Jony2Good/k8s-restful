@@ -4,7 +4,7 @@ metadata:
   name: billing-php
   namespace: k8s-basics
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: billing-php

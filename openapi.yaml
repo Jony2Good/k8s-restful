@@ -13,6 +13,21 @@ tags:
   -  name: Auth
      description: Содержит методы для работы с пользователями
 
+  -  name: Billing
+     description: Содержит методы для работы с аккаунтом пользователя
+
+  -  name: Orders
+     description: Содержит методы для работы с заказами
+
+  -  name: Notifications
+     description: Содержит методы для работы с уведомлениями
+
+  -  name: Dishes
+     description: Содержит методы для работы с товарами
+
+  -  name: Payments
+     description: Содержит методы для работы с оплатой заказа
+
 paths:
   /auth/v1/register:
     post:
@@ -194,6 +209,199 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
 
+  /billing/v1/me:
+    post:
+      tags:
+        - Billing
+      description: 'Получение данных о счете/аккаунте пользователя'
+      summary: 'Данные об аккаунте пользователя'
+      operationId: 'billingShow'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/billingResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    put:
+      tags:
+        - Billing
+      description: 'Изменение счета пользователя'
+      summary: 'Изменение счета пользователя'
+      operationId: 'putBilling'
+      security:
+      - BearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/billingBody'
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/billingResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /orders/v1/dishes:
+    get:
+      tags:
+        - Dishes
+      description: 'Получение списка товаров'
+      summary: 'Список товаров'
+      operationId: 'getDishes'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/dishResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /orders/v1/payments/{id}:
+    get:
+      tags:
+        - Payments
+      description: 'Оплата зарезервированного заказа'
+      summary: 'Оплата заказа'
+      operationId: 'paymentsOrder'
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: 'ID заказа для оплаты'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/paymentsResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /orders/v1/orders:
+    get:
+      tags:
+        - Orders
+      description: 'Получение данных о заказе пользователя'
+      summary: 'Данные о заказе'
+      operationId: 'ordersShow'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ordersResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    post:
+      tags:
+        - Orders
+      description: 'Формирование заказа пользователем'
+      summary: 'Сформировать заказа'
+      operationId: 'storeOrders'
+      security:
+      - BearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ordersBody'
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ordersResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /notifications/v1/me:
+    get:
+      tags:
+        - Notifications
+      description: 'Получение данных о, отправленных уведомлениях пользователю'
+      summary: 'Данные об уведомлениях'
+      operationId: 'notificationShow'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: 'Успешная операция'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/successModel'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/notificationsResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    
+ 
 components:
   securitySchemes:
     BearerAuth:
@@ -277,6 +485,45 @@ components:
               password:
                 type: string
                 example: 'admin'
+
+    billingBody:
+      description: JSON объект, содержащий информацию о поплнении аккаунта
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [balance]
+            properties:
+              balance:
+                type: integer
+                example: 2000
+
+    ordersBody:
+      description: JSON объект, содержащий информацию о пользователе
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Блюда в заказе
+            required: [dishes]
+            properties:
+              dishes:
+                type: object
+                description: Информация о товаре
+                required:
+                  - id
+                  - amount                
+                properties:
+                  id:
+                    description: Номер блюда
+                    type: integer
+                    example: 1
+                  amount:
+                    description: Количество блюд в заказа
+                    type: integer
+                    example: 13                     
 
   schemas:
     successModel:
@@ -380,4 +627,136 @@ components:
               description: 'Электронная почта" пользователя'
               type: string
               example: akk_1@mail.ru       
-  
+
+    billingResponse:
+      description: 'Данные зарегистрированного пользователя'
+      required: [id, user_id, balance, created_at, updated_at]
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Номер счета
+          example: 999
+        user_id:
+          type: integer
+          description: Номер пользователя
+          example: 999
+        balance:
+          type: integer
+          description: Состояние счета
+          example: 999
+        created_at:
+          type: string
+          description: Дата создания счета
+          example: 2025-06-01
+        updated_at:
+          type: string
+          description: Дата изменения счета
+          example: 2025-06-01      
+    
+    dishResponse:
+      description: 'Информация о товарах'
+      required: [id, name, recipe, image_url, article, price]
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Номер товара
+          example: 999
+        name:
+          type: string
+          description: Название товара
+          example: Яблочный пирог
+        recipe:
+          type: string
+          description: Описание товара
+          example: Хорошее блюдо
+        image_url:
+          type: string
+          description: Ссылка на картинку
+          example: https://article.jpg
+        article:
+          type: string
+          description: Артикул товара
+          example: 131313
+        price:
+          type: integer
+          description: Цена товара
+          example: 200
+
+    paymentsResponse:
+      description: 'Информация о товарах'
+      required: [message]
+      type: object
+      properties:
+        message:
+          type: string
+          description: Сообщение об операции
+          example: Товар оплачен  
+
+    ordersResponse:
+      description: 'Данные о заказе'
+      required: [id, user_id, created_at, updated_atб order_dishes]
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Номер заказа
+          example: 999
+        user_id:
+          type: integer
+          description: Номер пользователя
+          example: 999        
+        created_at:
+          type: string
+          description: Дата создания заказа
+          example: 2025-06-01
+        updated_at:
+          type: string
+          description: Дата изменения заказа
+          example: 2025-06-01  
+        order_dishes:
+          type: object
+          description: Информация о товаре
+          required:
+            - id
+            - amount                
+          properties:
+            id:
+              description: Номер блюда
+              type: integer
+              example: 1
+            amount:
+              description: Количество блюд в заказа
+              type: integer
+              example: 13     
+
+    notificationsResponse:
+      description: 'Информация о, отправленных уведомлениях'
+      required: [id, name, recipe, image_url, article, price]
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Номер товара
+          example: 999
+        user:
+          type: integer
+          description: Номер пользователя
+          example: 999
+        order:
+          type: integer
+          description: Номер заказа
+          example: 13
+        email:
+          type: string
+          description: Адрес электронной почты пользователя
+          example: example@gmail.com
+        notification:
+          type: string
+          description: Текст уведомления
+          example: Если хочешь жить...
+        error:
+          type: boolean
+          description: Наличие ошибки при оплате заказа
+          example: true    

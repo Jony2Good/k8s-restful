@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: laravel-job
+  name: notification-service-job
   namespace: k8s-basics
 spec:
   template:
@@ -25,7 +25,7 @@ spec:
                   key: POSTGRES_USER
       containers:
         - name: migrate
-          image: atrem2023/auth-service:amd64
+          image: atrem2023/notification-service:amd64
           command: ["bash", "update.sh"]
           env:
             - name: DB_CONNECTION
