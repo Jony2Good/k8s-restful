@@ -60,7 +60,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace k
 **Инициализируем манифесты**
 
 ```
-kubectl apply -f k8s/api-gateway
+kubectl apply -f k8s/first/api-gateway
 ```
 
 #### Подготовка к установке остальных сервисов
@@ -143,7 +143,7 @@ kubectl get pods -n k8s-basics
 **Инициализируем манифесты**
 
 ```
-kubectl apply -f k8s/
+kubectl apply -f k8s/second/
 ```
 
 [1]: https://github.com/Jony2Good/k8s-restful/blob/main/restful-schema.png "Схема-картинка"
