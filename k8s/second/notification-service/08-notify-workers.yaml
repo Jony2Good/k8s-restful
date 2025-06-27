@@ -20,4 +20,9 @@ spec:
       containers:
         - name: registry-event
           image: atrem2023/notification-service:amd64
-          command: ["php", "artisan", "app:registry-event"]    
+          command: ["php", "artisan", "app:notification-event"]
+          env:
+          - name: RABBITMQ_HOST
+            value: "rabbitmq"
+          - name: RABBITMQ_PORT
+            value: "5672"    
