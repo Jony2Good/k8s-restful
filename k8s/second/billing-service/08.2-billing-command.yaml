@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: billing-queue-worker
+  name: billing-payment-event
   namespace: k8s-basics
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: billing-queue-worker
+      app: billing-payment-event
   template:
     metadata:
       labels:
-        app: billing-queue-worker
+        app: billing-payment-event
     spec:
       initContainers:
         - name: wait-for-php
           image: alpine:3.18
           command: ['sh', '-c', 'apk add --no-cache netcat-openbsd && until nc -z billing-php-service 9000; do echo "Waiting for billing-php-service..."; sleep 2; done;']
       containers:
-        - name: queue-worker
+        - name: payment-event
           image: atrem2023/billing-service:amd64
-          command: ["php", "artisan", "queue:work", "--verbose", "--tries=3", "--timeout=60"]
+          command: ["php", "artisan", "app:payment-event"]      
           env:
           - name: RABBITMQ_HOST
             value: "rabbitmq"
           - name: RABBITMQ_PORT
-            value: "5672"           
+            value: "5672"
