@@ -55,7 +55,7 @@ kubectl apply -f k8s/first/api-gateway
 
 #### Подготовка к установке остальных сервисов
 
-1. Установка ingress-nginx + конфигурация Prometheus
+1. Установка ingress-nginx
 
 **Получаем нужный репозиторий из helm**
 
@@ -66,7 +66,7 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 **Устанавливаем ingress-controller в namespase k8s-basics и конфигурируем Prometheus**
 
 ```
-helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --namespace k8s-basics --set controller.metrics.enabled=true --set-string controller.podAnnotations."prometheus.io/scrape"="true" --set-string controller.podAnnotations."prometheus.io/port"="10254"
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace k8s-basics
 ```
 
 **Проверяем services**
