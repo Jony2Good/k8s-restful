@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: billing-nginx-service
+  name: billing-service
   namespace: k8s-basics
   labels:
     app: billing-service-nginx-deploy

@@ -4,7 +4,7 @@ metadata:
   name: billing-service-nginx-deploy
   namespace: k8s-basics
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: billing-service-nginx-deploy
