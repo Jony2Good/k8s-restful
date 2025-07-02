@@ -512,18 +512,20 @@ components:
               dishes:
                 type: array
                 description: Список блюд в заказе
-                required:
-                  - id
-                  - amount                
-                properties:
-                  id:
-                    description: Номер блюда
-                    type: integer
-                    example: 1
-                  amount:
-                    description: Количество блюд в заказа
-                    type: integer
-                    example: 13                     
+                items:
+                  type: object
+                  required:
+                    - id
+                    - amount
+                  properties:
+                    id:
+                      description: Номер блюда
+                      type: integer
+                      example: 1
+                    amount:
+                      description: Количество блюд в заказе
+                      type: integer
+                      example: 13                   
 
   schemas:
     successModel:
