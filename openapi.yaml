@@ -505,13 +505,13 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            description: Блюда в заказе
-            required: [dishes]
+            type: object           
+            required: 
+              - dishes
             properties:
               dishes:
-                type: object
-                description: Информация о товаре
+                type: array
+                description: Список блюд в заказе
                 required:
                   - id
                   - amount                
